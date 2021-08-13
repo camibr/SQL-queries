@@ -1,6 +1,5 @@
 /*
 Using the database WideWorldImporters, write a SQL query which reports the consistency between orders and their attached invoices.
-WideWorldImporters is a sample database built for SQL Server.
 */
 
 -- STRATEGY -> PIVOTING

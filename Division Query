@@ -1,0 +1,46 @@
+-------- QUERY 5
+
+/*
+Q5. In the database SQLPlayground, write a SQL query selecting all the customers' data who have purchased all the products 
+AND have bought more than 50 products in total (sum of all purchases).
+*/
+
+-- STRATEGY -> DIVISION QUERY
+
+
+SELECT cust_purchased_all.CustomerId, cust_purchased_all.CustomerName
+FROM 
+	(
+		SELECT cu.CustomerID, cu.CustomerName
+		FROM Customer as cu
+		WHERE 
+		NOT EXISTS
+		(
+			SELECT *
+				FROM Product as pro
+				WHERE NOT EXISTS
+				(
+					SELECT *
+					FROM Purchase as pu
+					WHERE
+						pu.ProductId = pro.ProductId
+			
+				)
+		)
+	) as cust_purchased_all
+,
+
+	(
+			SELECT pu.CustomerId, SUM(Qty) as Totalpurchased
+			FROM Purchase as pu
+				, Customer as cu
+			WHERE pu.CustomerId = cu.CustomerId
+			GROUP BY pu.CustomerId
+			HAVING SUM(Qty) > 50
+
+	) as greaterthan50
+
+WHERE 
+	cust_purchased_all.CustomerId = greaterthan50.CustomerId
+
+

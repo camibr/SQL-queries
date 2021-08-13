@@ -1,0 +1,253 @@
+
+CREATE OR ALTER PROCEDURE ReportCustomerTurnover @choice INT, @year INT
+AS
+BEGIN  --main
+	SET NOCOUNT ON;
+
+	IF (@choice = 1)
+	BEGIN  --1
+			
+		SELECT 
+			cu.CustomerName
+			,
+               ( 
+                    SELECT COALESCE ( SUM (ivli.UnitPrice * ivli.Quantity), 0) 
+                    FROM Sales.Invoices as iv
+						, Sales.InvoiceLines as ivli
+					WHERE 
+						iv.InvoiceID = ivli.InvoiceID
+						AND cu.CustomerID = iv.CustomerID
+						AND MONTH(iv.InvoiceDate) = 1
+						AND YEAR(iv.InvoiceDate) = @year
+				) as 'Jan'
+				,
+               ( 
+                    SELECT COALESCE ( SUM (ivli.UnitPrice * ivli.Quantity), 0) 
+                    FROM Sales.Invoices as iv
+						, Sales.InvoiceLines as ivli 
+					WHERE 
+						iv.InvoiceID = ivli.InvoiceID
+						AND cu.CustomerID = iv.CustomerID
+						AND MONTH(iv.InvoiceDate) = 2
+						AND YEAR(iv.InvoiceDate) = @year
+				) as 'Feb'
+				,
+               ( 
+                    SELECT COALESCE ( SUM (ivli.UnitPrice * ivli.Quantity), 0) 
+                    FROM Sales.Invoices as iv
+						, Sales.InvoiceLines as ivli 
+					WHERE 
+						iv.InvoiceID = ivli.InvoiceID
+						AND cu.CustomerID = iv.CustomerID
+						AND MONTH(iv.InvoiceDate) = 3
+						AND YEAR(iv.InvoiceDate) = @year 
+				) as 'Mar'
+				,
+               ( 
+                    SELECT COALESCE ( SUM (ivli.UnitPrice * ivli.Quantity), 0) 
+                    FROM Sales.Invoices as iv
+						, Sales.InvoiceLines as ivli 
+					WHERE 
+						iv.InvoiceID = ivli.InvoiceID
+						AND cu.CustomerID = iv.CustomerID
+						AND MONTH(iv.InvoiceDate) = 4
+						AND YEAR(iv.InvoiceDate) = @year 
+				) as 'Apr'
+				,
+               ( 
+                    SELECT COALESCE ( SUM (ivli.UnitPrice * ivli.Quantity), 0) 
+                    FROM Sales.Invoices as iv
+						, Sales.InvoiceLines as ivli
+					WHERE 
+						iv.InvoiceID = ivli.InvoiceID
+						AND cu.CustomerID = iv.CustomerID
+						AND MONTH(iv.InvoiceDate) = 5
+						AND YEAR(iv.InvoiceDate) = @year
+				) as 'May'
+				,
+               ( 
+                    SELECT COALESCE ( SUM (ivli.UnitPrice * ivli.Quantity), 0)
+                    FROM Sales.Invoices as iv
+						, Sales.InvoiceLines as ivli 
+					WHERE 
+						iv.InvoiceID = ivli.InvoiceID
+						AND cu.CustomerID = iv.CustomerID
+						AND MONTH(iv.InvoiceDate) = 6
+						AND YEAR(iv.InvoiceDate) = @year
+				) as 'Jun'
+				,
+               ( 
+                    SELECT COALESCE ( SUM (ivli.UnitPrice * ivli.Quantity), 0)
+                    FROM Sales.Invoices as iv
+						, Sales.InvoiceLines as ivli 
+					WHERE 
+						iv.InvoiceID = ivli.InvoiceID
+						AND cu.CustomerID = iv.CustomerID
+						AND MONTH(iv.InvoiceDate) = 7
+						AND YEAR(iv.InvoiceDate) = @year
+				) as 'Jul'
+				,
+               ( 
+                    SELECT COALESCE ( SUM (ivli.UnitPrice * ivli.Quantity), 0) 
+                    FROM Sales.Invoices as iv
+						, Sales.InvoiceLines as ivli 
+					WHERE 
+						iv.InvoiceID = ivli.InvoiceID
+						AND cu.CustomerID = iv.CustomerID
+						AND MONTH(iv.InvoiceDate) = 8
+						AND YEAR(iv.InvoiceDate) = @year
+				) as 'Aug'
+				,
+               ( 
+                    SELECT COALESCE ( SUM (ivli.UnitPrice * ivli.Quantity), 0)
+                    FROM Sales.Invoices as iv
+						, Sales.InvoiceLines as ivli 
+					WHERE 
+						iv.InvoiceID = ivli.InvoiceID
+						AND cu.CustomerID = iv.CustomerID
+						AND MONTH(iv.InvoiceDate) = 9
+						AND YEAR(iv.InvoiceDate) = @year
+				) as 'Sep'
+				,
+               ( 
+                    SELECT COALESCE ( SUM (ivli.UnitPrice * ivli.Quantity), 0)
+                    FROM Sales.Invoices as iv
+						, Sales.InvoiceLines as ivli 
+					WHERE 
+						iv.InvoiceID = ivli.InvoiceID
+						AND cu.CustomerID = iv.CustomerID
+						AND MONTH(iv.InvoiceDate) = 10
+						AND YEAR(iv.InvoiceDate) = @year
+				) as 'Oct'
+				,
+               ( 
+                    SELECT COALESCE ( SUM (ivli.UnitPrice * ivli.Quantity), 0)
+                    FROM Sales.Invoices as iv
+						, Sales.InvoiceLines as ivli 
+					WHERE 
+						iv.InvoiceID = ivli.InvoiceID
+						AND cu.CustomerID = iv.CustomerID
+						AND MONTH(iv.InvoiceDate) = 11
+						AND YEAR(iv.InvoiceDate) = @year
+				) as 'Nov'
+				,
+               ( 
+                    SELECT COALESCE ( SUM (ivli.UnitPrice * ivli.Quantity), 0)
+                    FROM Sales.Invoices as iv
+						, Sales.InvoiceLines as ivli 
+					WHERE 
+						iv.InvoiceID = ivli.InvoiceID
+						AND cu.CustomerID = iv.CustomerID
+						AND MONTH(iv.InvoiceDate) = 12
+						AND YEAR(iv.InvoiceDate) = @year
+				) as 'Dec'
+
+		FROM Sales.Customers as cu
+		ORDER BY cu.CustomerName
+
+	END  --1
+
+	IF (@choice = 2)
+	BEGIN  --2
+
+		SELECT 
+			cu.CustomerName
+			,
+               ( 
+                      SELECT COALESCE ( SUM (ivli.UnitPrice * ivli.Quantity), 0) 
+                    FROM Sales.Invoices as iv
+						, Sales.InvoiceLines as ivli 
+					WHERE 
+						iv.InvoiceID = ivli.InvoiceID
+						AND cu.CustomerID = iv.CustomerID 
+						AND YEAR(iv.InvoiceDate) = @year
+						AND DATEPART(QUARTER, iv.InvoiceDate) = 4) as 'Q1'
+				, 
+               ( 
+                      SELECT COALESCE ( SUM (ivli.UnitPrice * ivli.Quantity), 0) 
+                    FROM Sales.Invoices as iv
+						, Sales.InvoiceLines as ivli 
+					WHERE 
+						iv.InvoiceID = ivli.InvoiceID
+						AND cu.CustomerID = iv.CustomerID 
+						AND YEAR(iv.InvoiceDate) = @year
+						AND DATEPART(QUARTER, iv.InvoiceDate) = 4) as 'Q2'
+				, 
+               ( 
+                      SELECT COALESCE ( SUM (ivli.UnitPrice * ivli.Quantity), 0) 
+                    FROM Sales.Invoices as iv
+						, Sales.InvoiceLines as ivli 
+					WHERE 
+						iv.InvoiceID = ivli.InvoiceID
+						AND cu.CustomerID = iv.CustomerID 
+						AND YEAR(iv.InvoiceDate) = @year
+						AND DATEPART(QUARTER, iv.InvoiceDate) = 4) as 'Q3'
+				, 
+               ( 
+                      SELECT COALESCE ( SUM (ivli.UnitPrice * ivli.Quantity), 0) 
+                    FROM Sales.Invoices as iv
+						, Sales.InvoiceLines as ivli 
+					WHERE 
+						iv.InvoiceID = ivli.InvoiceID
+						AND cu.CustomerID = iv.CustomerID
+						AND YEAR(iv.InvoiceDate) = @year
+						AND DATEPART(QUARTER, iv.InvoiceDate) = 4) as 'Q4'
+
+
+		FROM Sales.Customers as cu
+		ORDER BY cu.CustomerName
+
+	END  --2
+
+	IF (@choice = 3)
+	BEGIN  --3
+
+		SELECT 
+			cu.CustomerName
+			,
+               ( 
+                      SELECT COALESCE ( SUM (ivli.UnitPrice * ivli.Quantity), 0) 
+                    FROM Sales.Invoices as iv
+						, Sales.InvoiceLines as ivli 
+					WHERE 
+						iv.InvoiceID = ivli.InvoiceID
+						AND cu.CustomerID = iv.CustomerID 
+						AND YEAR(iv.InvoiceDate) = 2013) as '2013'
+				, 
+               ( 
+                      SELECT COALESCE ( SUM (ivli.UnitPrice * ivli.Quantity), 0) 
+                    FROM Sales.Invoices as iv
+						, Sales.InvoiceLines as ivli 
+					WHERE 
+						iv.InvoiceID = ivli.InvoiceID
+						AND cu.CustomerID = iv.CustomerID 
+						AND YEAR(iv.InvoiceDate) = 2014) as '2014'
+				, 
+               ( 
+                      SELECT COALESCE ( SUM (ivli.UnitPrice * ivli.Quantity), 0) 
+                    FROM Sales.Invoices as iv
+						, Sales.InvoiceLines as ivli 
+					WHERE 
+						iv.InvoiceID = ivli.InvoiceID
+						AND cu.CustomerID = iv.CustomerID 
+						AND YEAR(iv.InvoiceDate) = 2015) as '2015'
+				, 
+               ( 
+                      SELECT COALESCE ( SUM (ivli.UnitPrice * ivli.Quantity), 0) 
+                    FROM Sales.Invoices as iv
+						, Sales.InvoiceLines as ivli 
+					WHERE 
+						iv.InvoiceID = ivli.InvoiceID
+						AND cu.CustomerID = iv.CustomerID
+						AND YEAR(iv.InvoiceDate) = 2016) as '2016'
+
+
+		FROM Sales.Customers as cu
+		ORDER BY cu.CustomerName
+
+	END  --3
+
+END  --main
+
+
+exec ReportCustomerTurnover @choice=2, @year=2015

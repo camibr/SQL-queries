@@ -1,0 +1,60 @@
+/*
+Using the database WideWorldImporters, write a SQL query which reports the consistency between orders and their attached invoices.
+WideWorldImporters is a sample database built for SQL Server.
+*/
+
+-- STRATEGY -> PIVOTING
+
+
+SELECT 
+	*, ABS(OrdersTotalValue - InvoicesTotalValue) AS AbsoluteValueDifference
+	
+FROM 
+	(
+		SELECT cu.CustomerID
+		, cu.CustomerName
+	
+		,	(
+				SELECT COUNT(*)
+				FROM Sales.Orders as od
+				WHERE cu.CustomerID = od.CustomerID
+			) AS TotalNBOrders
+	
+		,	(
+				SELECT	COUNT(*)
+				FROM Sales.Orders as od
+					, Sales.Invoices as iv
+				WHERE cu.CustomerID = iv.CustomerID
+					AND od.OrderID = iv.OrderID 
+			) AS TotalNBInvoices
+	
+		,	(
+				SELECT SUM(odli.Quantity * odli.UnitPrice)
+				FROM Sales.Orders as od
+					, Sales.OrderLines as odli
+					, Sales.Invoices as iv
+				WHERE
+					cu.CustomerID = od.CustomerID
+					AND od.OrderID = odli.OrderID
+					AND od.OrderID = iv.OrderID
+			) AS OrdersTotalValue
+	
+		,	(
+				SELECT SUM(ivli.Quantity * ivli.UnitPrice)
+				FROM Sales.Invoices as iv 
+					, Sales.InvoiceLines as ivli
+				WHERE
+					cu.CustomerID = iv.CustomerID
+					AND iv.InvoiceID = ivli.InvoiceID 
+			) AS InvoicesTotalValue
+	
+	
+	FROM Sales.Customers as cu
+
+) as Z
+
+ORDER BY AbsoluteValueDifference DESC, TotalNBOrders ASC, CustomerID ASC
+
+
+-- CONCLUSION : it's consistent !
+

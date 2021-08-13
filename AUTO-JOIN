@@ -1,8 +1,5 @@
--------- QUERY 4
-
-
 /*
-Q4. In the database WideWorldImporters, write a SQL query which reports the highest loss of money from orders not being converted 
+In the database WideWorldImporters, write a SQL query which reports the highest loss of money from orders not being converted 
 into invoices, by customer category.
 The name and id of the customer who generated this highest loss must also be identified. The resultset is ordered by highest loss.
 */

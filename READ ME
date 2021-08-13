@@ -1,0 +1,10 @@
+The WideWorldImporters database is used to wrangle data with SQL queries.
+This database is one of the main sample databases for SQL Server which is used to play with different customers scenarios (customers, invoices).
+
+On this repository there are 5 techniques to wrangle data with SQL :
+- Pivoting tables
+- Update customer information
+- Create a procedure
+- Auto-Join
+- Division Query
+

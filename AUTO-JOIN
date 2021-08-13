@@ -1,0 +1,67 @@
+-------- QUERY 4
+
+
+/*
+Q4. In the database WideWorldImporters, write a SQL query which reports the highest loss of money from orders not being converted 
+into invoices, by customer category.
+The name and id of the customer who generated this highest loss must also be identified. The resultset is ordered by highest loss.
+*/
+
+-- STRATEGY -> CREATION OF A NEW TABLE + AUTO-JOIN WITH THIS NEW TABLE
+
+
+-- I create a new table called "Newtable" in which I put the result of a query that returns all the losses done by the customers
+-- from the different customer categories. I use this Newtable to make an AUTO-JOIN, in order to get the value of the maximum loss
+-- performed by a customer, for each category (i.e. the worst customer per category with the amount of the loss + the guilty's identity !).
+
+--DROP TABLE Newtable;
+
+-- Create a new table Newtable that I will use right after for an auto-join
+
+SELECT *
+INTO Newtable
+FROM
+(
+	SELECT 
+		cat.CustomerCategoryName,
+		 SUM(odli.Quantity * odli.UnitPrice) as Loss
+		, cu.CustomerName
+		, cu.CustomerID
+	FROM 
+		Sales.Customers as cu
+		, Sales.Orders as od
+		, Sales.OrderLines as odli
+		, Sales.CustomerCategories as cat
+	WHERE 
+		cu.CustomerID = od.CustomerID
+		AND od.OrderID = odli.OrderID
+		AND cat.CustomerCategoryID = cu.CustomerCategoryID
+		AND NOT EXISTS
+		(
+			SELECT *
+			FROM  Sales.Invoices as iv
+			WHERE iv.orderID = od.OrderID
+		) 
+	GROUP BY cu.CustomerID, cu.CustomerName, cat.CustomerCategoryName
+) as new
+
+
+-- Quickly check the creation of my new table
+SELECT *
+FROM Newtable
+
+
+-- Auto-Join
+
+SELECT n1.CustomerCategoryName
+	, n1.Loss as MaxLoss
+	, n1.CustomerName
+	, n1.CustomerID
+FROM Newtable as n1
+LEFT JOIN Newtable as n2
+	ON n1.CustomerCategoryName = n2.CustomerCategoryName
+	AND n1.Loss < n2.Loss
+WHERE n2.Loss is NULL
+ORDER BY n1.Loss DESC
+
+

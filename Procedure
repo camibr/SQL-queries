@@ -1,5 +1,3 @@
--------- QUERY 3
-
 
 CREATE OR ALTER PROCEDURE ReportCustomerTurnover @choice INT, @year INT
 AS
